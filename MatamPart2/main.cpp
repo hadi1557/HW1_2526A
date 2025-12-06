@@ -30,9 +30,9 @@ struct Transaction {
  * @param transaction Transaction to print
 */
 void TransactionDumpInfo(const Transaction& transaction, ofstream& file) {
- file <<"Sender Name: "<<transaction.sender<< "\n";
- file <<"Receiver Name: "<<transaction.receiver<< "\n";
- file <<"Transaction Value: "<<transaction.value<< "\n";
+ file <<"Sender Name: "<<transaction.sender<< std::endl;
+ file <<"Receiver Name: "<<transaction.receiver<< std::endl;
+ file <<"Transaction Value: "<<transaction.value<< std::endl;
 
 }
 
