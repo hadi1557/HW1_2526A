@@ -44,7 +44,11 @@ void TransactionDumpInfo(const Transaction& transaction, ofstream& file) {
  *
  * @return The hashed message
 */
-string TransactionHashedMessage(const Transaction& transaction);
+string TransactionHashedMessage(const Transaction& transaction) {
+ string StrValue = std::to_string(transaction.value);
+ string hash = transaction.sender + transaction.receiver + StrValue;
+ return hash;
+}
 
 
 /**
