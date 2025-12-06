@@ -20,13 +20,19 @@ typedef unsigned int (*updateFunction)(unsigned int);
  *
 */
 struct BlockChain {
-    // TODO: Implement 
+    Transaction* head;
+ int size;
 };
 
 /**
  * @return newly initialized empty BlockChain Object
 */
-BlockChain BlockChainInit();
+BlockChain BlockChainInit() {
+ BlockChain b;
+ b.head = nullptr;
+ b.size = 0;
+ return b;
+}
 
 /**
  * BlockChainDestory - Destroys an existing BlockChain and deallocates all of its memory, after calling this method, blockChain can't be used/accessed again.
