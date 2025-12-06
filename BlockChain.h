@@ -1,15 +1,15 @@
-BlockChain.h 
 #pragma once
 
 #include <string>
 #include <fstream>
 
 #include "Transaction.h"
+#include "BlockChain.h"
 
 using std::string;
 using std::ifstream;
 using std::ofstream;
-
+using namespace std;
 
 typedef unsigned int (*updateFunction)(unsigned int);
 

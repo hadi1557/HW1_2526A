@@ -1,0 +1,3 @@
+C:/Users/tmlk1/Documents/HW1_2526A/HW1_2526A/cmake-build-debug/CMakeFiles/HW1_2526A.dir
+C:/Users/tmlk1/Documents/HW1_2526A/HW1_2526A/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/tmlk1/Documents/HW1_2526A/HW1_2526A/cmake-build-debug/CMakeFiles/rebuild_cache.dir

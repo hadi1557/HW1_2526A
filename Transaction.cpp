@@ -1,7 +1,9 @@
 #pragma once
-
-#include <string>
+#include <Utilities.h>
 #include <fstream>
+
+
+
 
 using std::string;
 using std::ofstream;
@@ -44,10 +46,11 @@ void TransactionDumpInfo(const Transaction& transaction, ofstream& file) {
  *
  * @return The hashed message
 */
-string TransactionHashedMessage(const Transaction& transaction) {
-    string StrValue = std::to_string(transaction.value);
-    string hash = transaction.sender + "|" + transaction.receiver + "|" + StrValue;
-    return hash;
+string TransactionHashMessage(const Transaction& transaction) {
+    int key = transaction.value;
+    const string value1 = transaction.sender;
+    const string value2 = transaction.receiver;
+    return hash(key,value1,value2);
 }
 
 
@@ -61,6 +64,6 @@ string TransactionHashedMessage(const Transaction& transaction) {
  *
 */
 bool TransactionVerifyHashedMessage(const Transaction& transaction,string hashedMessage) {
-    string StrValue = TransactionHashedMessage(transaction);
+    string StrValue = TransactionHashMessage(transaction);
     return hashedMessage == StrValue;
 }
