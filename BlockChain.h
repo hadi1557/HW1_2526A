@@ -69,7 +69,7 @@ int BlockChainGetSize(const BlockChain &blockChain) {
 */
 int BlockChainPersonalBalance(const BlockChain &blockChain, const string &name) {
     int sum = 0;
-    Block* CurrentBlock = blockChain.head;
+    Block *CurrentBlock = blockChain.head;
     while (CurrentBlock != nullptr) {
         if (name == CurrentBlock->transaction.sender) {
             sum = sum - CurrentBlock->transaction.value;
@@ -98,7 +98,28 @@ void BlockChainAppendTransaction(
     const string &sender,
     const string &receiver,
     const string &timestamp
-);
+) {
+    Transaction trans;
+    trans.sender = sender;
+    trans.receiver = receiver;
+    trans.value = value;
+
+    Block *newBlock = new Block;
+    if (blockChain.head == nullptr) {
+        blockChain.head = newBlock;
+        newBlock->next = nullptr;
+    } else {
+        Block *CurrentBlock = blockChain.head;
+        while (CurrentBlock->next != nullptr) {
+            CurrentBlock = CurrentBlock->next;
+        }
+        CurrentBlock->next = newBlock;
+        newBlock->next = nullptr;
+    }
+    newBlock->transaction = trans;
+    newBlock->timestamp = timestamp;
+    blockChain.size++;
+}
 
 
 /**
@@ -112,7 +133,11 @@ void BlockChainAppendTransaction(
     BlockChain &blockChain,
     const Transaction &transaction,
     const string &timestamp
-);
+) {
+    BlockChainAppendTransaction(blockChain, transaction.value
+                                , transaction.sender,
+                                transaction.receiver, timestamp);
+}
 
 
 /**
