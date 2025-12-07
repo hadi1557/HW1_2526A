@@ -20,7 +20,7 @@ typedef unsigned int (*updateFunction)(unsigned int);
  *
 */
 struct BlockChain {
-    Transaction* head;
+    Block* head;
  int size;
 };
 
@@ -42,7 +42,7 @@ void BlockChainDestroy(BlockChain& blockChain) {
   Block* b = blockChain.head;
   blockChain.head = b->next;
   delete b;
-blockChain.size--;
+  blockChain.size--;
  }
 }
 
@@ -54,7 +54,9 @@ blockChain.size--;
  *
  * @return Number of Blocks in the BlockChain
 */
-int BlockChainGetSize(const BlockChain& blockChain);
+int BlockChainGetSize(const BlockChain& blockChain) {
+ return blockChain.size;
+}
 
 
 /**
