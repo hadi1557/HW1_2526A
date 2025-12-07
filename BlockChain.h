@@ -37,7 +37,14 @@ BlockChain BlockChainInit() {
 /**
  * BlockChainDestory - Destroys an existing BlockChain and deallocates all of its memory, after calling this method, blockChain can't be used/accessed again.
 */
-void BlockChainDestroy(BlockChain& blockChain);
+void BlockChainDestroy(BlockChain& blockChain) {
+ while (blockChain.head != nullptr) {
+  Block* b = blockChain.head;
+  blockChain.head = b->next;
+  delete b;
+blockChain.size--;
+ }
+}
 
 
 /**
