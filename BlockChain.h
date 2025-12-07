@@ -20,30 +20,30 @@ typedef unsigned int (*updateFunction)(unsigned int);
  *
 */
 struct BlockChain {
-    Block* head;
- int size;
+    Block *head;
+    int size;
 };
 
 /**
  * @return newly initialized empty BlockChain Object
 */
 BlockChain BlockChainInit() {
- BlockChain b;
- b.head = nullptr;
- b.size = 0;
- return b;
+    BlockChain b;
+    b.head = nullptr;
+    b.size = 0;
+    return b;
 }
 
 /**
  * BlockChainDestory - Destroys an existing BlockChain and deallocates all of its memory, after calling this method, blockChain can't be used/accessed again.
 */
-void BlockChainDestroy(BlockChain& blockChain) {
- while (blockChain.head != nullptr) {
-  Block* b = blockChain.head;
-  blockChain.head = b->next;
-  delete b;
-  blockChain.size--;
- }
+void BlockChainDestroy(BlockChain &blockChain) {
+    while (blockChain.head != nullptr) {
+        Block *b = blockChain.head;
+        blockChain.head = b->next;
+        delete b;
+        blockChain.size--;
+    }
 }
 
 
@@ -54,8 +54,8 @@ void BlockChainDestroy(BlockChain& blockChain) {
  *
  * @return Number of Blocks in the BlockChain
 */
-int BlockChainGetSize(const BlockChain& blockChain) {
- return blockChain.size;
+int BlockChainGetSize(const BlockChain &blockChain) {
+    return blockChain.size;
 }
 
 
@@ -67,7 +67,20 @@ int BlockChainGetSize(const BlockChain& blockChain) {
  *
  * @return Balance of the person
 */
-int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name);
+int BlockChainPersonalBalance(const BlockChain &blockChain, const string &name) {
+    int sum = 0;
+    Block* CurrentBlock = blockChain.head;
+    while (CurrentBlock != nullptr) {
+        if (name == CurrentBlock->transaction.sender) {
+            sum = sum - CurrentBlock->transaction.value;
+        }
+        if (name == CurrentBlock->transaction.receiver) {
+            sum = sum + CurrentBlock->transaction.value;
+        }
+        CurrentBlock = CurrentBlock->next;
+    }
+    return sum;
+}
 
 
 /**
@@ -80,11 +93,11 @@ int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name);
  * @param timestamp String that holds the time the transaction was made
 */
 void BlockChainAppendTransaction(
-        BlockChain& blockChain,
-        unsigned int value,
-        const string& sender,
-        const string& receiver,
-        const string& timestamp
+    BlockChain &blockChain,
+    unsigned int value,
+    const string &sender,
+    const string &receiver,
+    const string &timestamp
 );
 
 
@@ -96,9 +109,9 @@ void BlockChainAppendTransaction(
  * @param timestamp String that holds the time the transaction was made
 */
 void BlockChainAppendTransaction(
-        BlockChain& blockChain,
-        const Transaction& transaction,
-        const string& timestamp
+    BlockChain &blockChain,
+    const Transaction &transaction,
+    const string &timestamp
 );
 
 
@@ -110,7 +123,7 @@ void BlockChainAppendTransaction(
  * @return BlockChain created from the file
  *
 */
-BlockChain BlockChainLoad(ifstream& file);
+BlockChain BlockChainLoad(ifstream &file);
 
 
 /**
@@ -129,8 +142,7 @@ BlockChain BlockChainLoad(ifstream& file);
  * @param file File to print to
  *
 */
-void BlockChainDump(const BlockChain& blockChain, ofstream& file);
-
+void BlockChainDump(const BlockChain &blockChain, ofstream &file);
 
 
 /**
@@ -146,7 +158,7 @@ void BlockChainDump(const BlockChain& blockChain, ofstream& file);
  * @param file File to print to
  *
 */
-void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file);
+void BlockChainDumpHashed(const BlockChain &blockChain, ofstream &file);
 
 
 /**
@@ -163,7 +175,7 @@ void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file);
  *
  * @return true if the file is valid, false otherwise
 */
-bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file);
+bool BlockChainVerifyFile(const BlockChain &blockChain, std::ifstream &file);
 
 
 /**
@@ -172,7 +184,7 @@ bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file);
  *
  * @param blockChain BlockChain to compress
 */
-void BlockChainCompress(BlockChain& blockChain);
+void BlockChainCompress(BlockChain &blockChain);
 
 
 /**
@@ -181,4 +193,4 @@ void BlockChainCompress(BlockChain& blockChain);
  * @param blockChain BlockChain to update
  * @param function a pointer to a transform function
 */
-void BlockChainTransform(BlockChain& blockChain, updateFunction function);
+void BlockChainTransform(BlockChain &blockChain, updateFunction function);
