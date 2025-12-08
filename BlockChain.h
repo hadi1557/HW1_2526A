@@ -4,7 +4,8 @@
 #include <fstream>
 
 #include "Transaction.h"
-#include "BlockChain.h"
+#include "Utilities.h"
+
 
 using std::string;
 using std::ifstream;
@@ -19,33 +20,26 @@ typedef unsigned int (*updateFunction)(unsigned int);
  * BlockChain - Defining the new BlockChain Type
  *
 */
+struct Node {
+   Transaction transaction;
+   string timestamp;
+   Node* next;
+};
 struct BlockChain {
-    Block *head;
-    int size;
+  Node* root;
+  Node* tail;
+  int size;
 };
 
 /**
  * @return newly initialized empty BlockChain Object
 */
-BlockChain BlockChainInit() {
-    BlockChain b;
-    b.head = nullptr;
-    b.size = 0;
-    return b;
-}
+BlockChain BlockChainInit();
 
 /**
  * BlockChainDestory - Destroys an existing BlockChain and deallocates all of its memory, after calling this method, blockChain can't be used/accessed again.
 */
-void BlockChainDestroy(BlockChain &blockChain) {
-    while (blockChain.head != nullptr) {
-        Block *b = blockChain.head;
-        blockChain.head = b->next;
-        delete b;
-        blockChain.size--;
-    }
-}
-
+void BlockChainDestroy(BlockChain &blockChain);
 
 /**
  * BlockChainGetSize - returns the number of Blocks in the BlockChain
@@ -54,9 +48,7 @@ void BlockChainDestroy(BlockChain &blockChain) {
  *
  * @return Number of Blocks in the BlockChain
 */
-int BlockChainGetSize(const BlockChain &blockChain) {
-    return blockChain.size;
-}
+int BlockChainGetSize(const BlockChain &blockChain) ;
 
 
 /**
@@ -67,20 +59,7 @@ int BlockChainGetSize(const BlockChain &blockChain) {
  *
  * @return Balance of the person
 */
-int BlockChainPersonalBalance(const BlockChain &blockChain, const string &name) {
-    int sum = 0;
-    Block *CurrentBlock = blockChain.head;
-    while (CurrentBlock != nullptr) {
-        if (name == CurrentBlock->transaction.sender) {
-            sum = sum - CurrentBlock->transaction.value;
-        }
-        if (name == CurrentBlock->transaction.receiver) {
-            sum = sum + CurrentBlock->transaction.value;
-        }
-        CurrentBlock = CurrentBlock->next;
-    }
-    return sum;
-}
+int BlockChainPersonalBalance(const BlockChain &blockChain, const string &name);
 
 
 /**
@@ -98,28 +77,7 @@ void BlockChainAppendTransaction(
     const string &sender,
     const string &receiver,
     const string &timestamp
-) {
-    Transaction trans;
-    trans.sender = sender;
-    trans.receiver = receiver;
-    trans.value = value;
-
-    Block *newBlock = new Block;
-    if (blockChain.head == nullptr) {
-        blockChain.head = newBlock;
-        newBlock->next = nullptr;
-    } else {
-        Block *CurrentBlock = blockChain.head;
-        while (CurrentBlock->next != nullptr) {
-            CurrentBlock = CurrentBlock->next;
-        }
-        CurrentBlock->next = newBlock;
-        newBlock->next = nullptr;
-    }
-    newBlock->transaction = trans;
-    newBlock->timestamp = timestamp;
-    blockChain.size++;
-}
+);
 
 
 /**
@@ -133,11 +91,7 @@ void BlockChainAppendTransaction(
     BlockChain &blockChain,
     const Transaction &transaction,
     const string &timestamp
-) {
-    BlockChainAppendTransaction(blockChain, transaction.value
-                                , transaction.sender,
-                                transaction.receiver, timestamp);
-}
+);
 
 
 /**

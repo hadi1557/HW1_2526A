@@ -2,7 +2,7 @@
 #include <Utilities.h>
 #include <fstream>
 
-
+#include "Transaction.h"
 
 
 using std::string;
@@ -14,11 +14,6 @@ using std::ofstream;
  * Transaction - Defining the new Transaction Type
  *
 */
-struct Transaction {
-    unsigned int value;
-    string sender;
-    string receiver;
-};
 
 
 /**

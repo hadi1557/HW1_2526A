@@ -10,4 +10,6 @@ add_executable(HW1_2526A
     Transaction.cpp
     Transaction.h
     Utilities.cpp
-    Utilities.h)
+    Utilities.h
+        BlockChain.cpp
+        main.cpp)

@@ -63,6 +63,20 @@ build CMakeFiles/HW1_2526A.dir/Utilities.cpp.obj: CXX_COMPILER__HW1_2526A_unscan
   OBJECT_DIR = CMakeFiles\HW1_2526A.dir
   OBJECT_FILE_DIR = CMakeFiles\HW1_2526A.dir
 
+build CMakeFiles/HW1_2526A.dir/BlockChain.cpp.obj: CXX_COMPILER__HW1_2526A_unscanned_Debug C$:/Users/tmlk1/Documents/HW1_2526A/HW1_2526A/BlockChain.cpp || cmake_object_order_depends_target_HW1_2526A
+  DEP_FILE = CMakeFiles\HW1_2526A.dir\BlockChain.cpp.obj.d
+  FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/tmlk1/Documents/HW1_2526A/HW1_2526A/.
+  OBJECT_DIR = CMakeFiles\HW1_2526A.dir
+  OBJECT_FILE_DIR = CMakeFiles\HW1_2526A.dir
+
+build CMakeFiles/HW1_2526A.dir/main.cpp.obj: CXX_COMPILER__HW1_2526A_unscanned_Debug C$:/Users/tmlk1/Documents/HW1_2526A/HW1_2526A/main.cpp || cmake_object_order_depends_target_HW1_2526A
+  DEP_FILE = CMakeFiles\HW1_2526A.dir\main.cpp.obj.d
+  FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/tmlk1/Documents/HW1_2526A/HW1_2526A/.
+  OBJECT_DIR = CMakeFiles\HW1_2526A.dir
+  OBJECT_FILE_DIR = CMakeFiles\HW1_2526A.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target HW1_2526A
@@ -71,7 +85,7 @@ build CMakeFiles/HW1_2526A.dir/Utilities.cpp.obj: CXX_COMPILER__HW1_2526A_unscan
 #############################################
 # Link the executable HW1_2526A.exe
 
-build HW1_2526A.exe: CXX_EXECUTABLE_LINKER__HW1_2526A_Debug CMakeFiles/HW1_2526A.dir/Transaction.cpp.obj CMakeFiles/HW1_2526A.dir/Utilities.cpp.obj
+build HW1_2526A.exe: CXX_EXECUTABLE_LINKER__HW1_2526A_Debug CMakeFiles/HW1_2526A.dir/Transaction.cpp.obj CMakeFiles/HW1_2526A.dir/Utilities.cpp.obj CMakeFiles/HW1_2526A.dir/BlockChain.cpp.obj CMakeFiles/HW1_2526A.dir/main.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\HW1_2526A.dir
