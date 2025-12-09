@@ -1,7 +1,6 @@
-#pragma once
-
 #include <string>
 #include <fstream>
+#include <vector>
 
 #include "Transaction.h"
 #include "BlockChain.h"
@@ -9,23 +8,13 @@
 using std::string;
 using std::ifstream;
 using std::ofstream;
+using std::vector;
 using namespace std;
 
 typedef unsigned int (*updateFunction)(unsigned int);
 
-
-/**
-*
- * BlockChain - Defining the new BlockChain Type
- *
-*/
-
-
-/**
- * @return newly initialized empty BlockChain Object
-*/
 BlockChain BlockChainInit() {
-    BlockChain* CurrentBlock = new BlockChain();
+    BlockChain chain;
     Node* dummy = new Node();
     dummy->transaction.sender = "";
     dummy->transaction.receiver = "";
@@ -33,186 +22,189 @@ BlockChain BlockChainInit() {
     dummy->timestamp = "";
     dummy->next = nullptr;
 
-    CurrentBlock->root = dummy;
-    CurrentBlock->tail = dummy;
-    CurrentBlock->size = 0;
+    chain.root = dummy;
+    chain.tail = dummy;
+    chain.size = 0;
 
-    return *CurrentBlock;
+    return chain;
 }
 
-/**
- * BlockChainDestory - Destroys an existing BlockChain and deallocates all of its memory, after calling this method, blockChain can't be used/accessed again.
-*/
-void BlockChainDestroy(BlockChain &blockChain) {
-   Node* dummy = blockChain.root;
-   while (dummy != NULL) {
-       Node *prev = dummy;
-       dummy = dummy->next;
-       delete prev;
-   }
+void BlockChainDestroy(BlockChain& blockChain) {
+    Node* cur = blockChain.root;
+    while (cur != nullptr) {
+        Node* to_delete = cur;
+        cur = cur->next;
+        delete to_delete;
+    }
+    blockChain.root = nullptr;
+    blockChain.tail = nullptr;
+    blockChain.size = 0;
 }
 
-/**
- * BlockChainGetSize - returns the number of Blocks in the BlockChain
- *
- * @param blockChain - BlockChain to measure
- *
- * @return Number of Blocks in the BlockChain
-*/
-int BlockChainGetSize(const BlockChain &blockChain) {
-   return blockChain.size;
+int BlockChainGetSize(const BlockChain& blockChain) {
+    return blockChain.size;
 }
 
+int BlockChainPersonalBalance(const BlockChain& blockChain, const string& name) {
+    int sum = 0;
+    Node* cur = blockChain.root->next;
 
-
-
-/**
- * BlockChainPersonalBalance - returns the balance of a given person, relative to a given BlockChain
- *
- * @param blockChain - BlockChain to calculate the balance from
- * @param name - Name of the person to calculate the balance for
- *
- * @return Balance of the person
-*/
-int BlockChainPersonalBalance(const BlockChain &blockChain, const string &name) {
-     int sum = 0;
-     Node *CurrentBlock = blockChain.root->next;
-     while (CurrentBlock != nullptr) {
-         if (name == CurrentBlock->transaction.sender) {
-             sum = sum - CurrentBlock->transaction.value;
-         }
-         if (name == CurrentBlock->transaction.receiver) {
-             sum = sum + CurrentBlock->transaction.value;
-         }
-         CurrentBlock = CurrentBlock->next;
-     }
-     return sum;
+    while (cur != nullptr) {
+        if (name == cur->transaction.sender)
+            sum -= cur->transaction.value;
+        if (name == cur->transaction.receiver)
+            sum += cur->transaction.value;
+        cur = cur->next;
+    }
+    return sum;
 }
 
+void BlockChainAppendTransaction(BlockChain& blockChain,
+                                 unsigned int value,
+                                 const string& sender,
+                                 const string& receiver,
+                                 const string& timestamp) {
+    Node* newNode = new Node();
+    newNode->transaction.value = value;
+    newNode->transaction.sender = sender;
+    newNode->transaction.receiver = receiver;
+    newNode->timestamp = timestamp;
+    newNode->next = nullptr;
 
-/**
- * BlockChainAppendTransaction - creates and appends a new transaction to the BlockChain
- *
- * @param blockChain BlockChain to append the transaction to
- * @param value Value of the transaction
- * @param sender Name of the sender
- * @param receiver Name of the receiver
- * @param timestamp String that holds the time the transaction was made
-*/
-void BlockChainAppendTransaction(
-    BlockChain &blockChain,
-    unsigned int value,
-    const string &sender,
-    const string &receiver,
-    const string &timestamp
-) {
-        Node *newNode = new Node();
-
-        newNode->transaction.value = value;
-        newNode->transaction.sender = sender;
-        newNode->transaction.receiver = receiver;
-        newNode->timestamp = timestamp;
-        newNode->next = nullptr;
-        // Node* debug = blockChain.tail;
-        blockChain.tail->next = newNode;
-        blockChain.tail = newNode;
-        blockChain.size++;
+    blockChain.tail->next = newNode;
+    blockChain.tail = newNode;
+    blockChain.size++;
 }
 
-
-/**
- * BlockChainAppendTransaction - appends a copy of a given transaction to the BlockChain
- *
- * @param blockChain BlockChain to append the transaction to
- * @param transaction Transaction we want to append
- * @param timestamp String that holds the time the transaction was made
-*/
-void BlockChainAppendTransaction(
-    BlockChain &blockChain,
-    const Transaction &transaction,
-    const string &timestamp
-) {
-    BlockChainAppendTransaction(blockChain,transaction.value
-        ,transaction.sender, transaction.receiver, timestamp);
+void BlockChainAppendTransaction(BlockChain& blockChain,
+                                 const Transaction& transaction,
+                                 const string& timestamp) {
+    BlockChainAppendTransaction(blockChain,
+                                transaction.value,
+                                transaction.sender,
+                                transaction.receiver,
+                                timestamp);
 }
 
+BlockChain BlockChainLoad(ifstream& file) {
+    BlockChain chain = BlockChainInit();
 
-/**
- * BlockChainLoad - Reads data from a file and creates a new block chain
- *
- * @param file Data file to read from
- *
- * @return BlockChain created from the file
- *
-*/
-BlockChain BlockChainLoad(ifstream &file);
+    string sender, receiver, timestamp;
+    unsigned int value;
 
+    while (file >> sender >> receiver >> value >> timestamp) {
+        BlockChainAppendTransaction(chain, value, sender, receiver, timestamp);
+    }
 
-/**
- * BlockChainDump - Prints the data of all transactions in the BlockChain to a given file
- *
- * Data will be printed in the following format:
- *
- * BlockChain info:
- * <n>.
- * Sender Name: <name>
- * Receiver Name: <name>
- * Transaction Value: <value>
- * Transaction Timestamp: <time>
- *
- * @param blockChain BlockChain to print
- * @param file File to print to
- *
-*/
-void BlockChainDump(const BlockChain &blockChain, ofstream &file);
+    return chain;
+}
 
+void BlockChainDump(const BlockChain& blockChain, ofstream& file) {
+    file << "BlockChain Info:" << endl;
 
-/**
- * BlockChainDumpHashed - Prints the *hashed data* of all transactions in the BlockChain to a given file
- *
- * Data will be printed in the following format:
- * <hashed message>
- * <hashed message>
- * ...
- * <hashed message>
- *
- * @param blockChain BlockChain to print
- * @param file File to print to
- *
-*/
-void BlockChainDumpHashed(const BlockChain &blockChain, ofstream &file);
+    vector<Node*> nodes;
+    Node* cur = blockChain.root->next;
 
+    while (cur != nullptr) {
+        nodes.push_back(cur);
+        cur = cur->next;
+    }
 
-/**
- * BlockChainVerifyFile - verifies that the file contains correct hashed messages of the given BlockChain
- *
- * Input file is expected to contain data in the following format:
- * <hashed message>
- * <hashed message>
- * ...
- * <hashed message>
- *
- * @param blockChain BlockChain to verify
- * @param file File to read from
- *
- * @return true if the file is valid, false otherwise
-*/
-bool BlockChainVerifyFile(const BlockChain &blockChain, std::ifstream &file);
+    int index = 1;
+    for (int i = (int)nodes.size() - 1; i >= 0; --i) {
+        file << index++ << "." << endl;
+        TransactionDumpInfo(nodes[i]->transaction, file);
+        file << "Transaction timestamp: " << nodes[i]->timestamp << endl;
+    }
+}
 
+void BlockChainDumpHashed(const BlockChain& blockChain, ofstream& file) {
+    vector<Node*> nodes;
+    Node* cur = blockChain.root->next;
 
-/**
- * BlockChainCompress - Compresses the given block chain based on the transaction's data.
- * All consecutive blocks with the same sender and receiver will be compressed to one Block.
- *
- * @param blockChain BlockChain to compress
-*/
-void BlockChainCompress(BlockChain &blockChain);
+    while (cur != nullptr) {
+        nodes.push_back(cur);
+        cur = cur->next;
+    }
 
+    for (int i = (int)nodes.size() - 1; i >= 0; --i) {
+        file << TransactionHashedMessage(nodes[i]->transaction);
+        if (i != 0)
+            file << endl;
+    }
+}
 
-/**
- * BlockChainTransform - Update the values of each transaction in the BlockChain
- *
- * @param blockChain BlockChain to update
- * @param function a pointer to a transform function
-*/
-void BlockChainTransform(BlockChain &blockChain, updateFunction function);
+bool BlockChainVerifyFile(const BlockChain& blockChain, std::ifstream& file) {
+    vector<Node*> nodes;
+    Node* cur = blockChain.root->next;
+
+    while (cur != nullptr) {
+        nodes.push_back(cur);
+        cur = cur->next;
+    }
+
+    vector<string> lines;
+    string line;
+    while (getline(file, line)) {
+        lines.push_back(line);
+    }
+
+    if (lines.size() != nodes.size())
+        return false;
+
+    int n = (int)nodes.size();
+    for (int i = 0; i < n; ++i) {
+        Node* node = nodes[n - 1 - i];
+        if (!TransactionVerifyHashedMessage(node->transaction, lines[i]))
+            return false;
+    }
+
+    return true;
+}
+
+void BlockChainCompress(BlockChain& blockChain) {
+    Node* first = blockChain.root->next;
+    if (!first) return;
+
+    while (first != nullptr) {
+        Node* current = first;
+        Node* next = current->next;
+        unsigned int sum = current->transaction.value;
+
+        while (next &&
+               next->transaction.sender == first->transaction.sender &&
+               next->transaction.receiver == first->transaction.receiver) {
+            sum += next->transaction.value;
+            current = next;
+            next = current->next;
+        }
+
+        if (current != first) {
+            first->transaction.value = sum;
+            first->timestamp = current->timestamp;
+
+            Node* del = first->next;
+            while (del != next) {
+                Node* tmp = del->next;
+                delete del;
+                del = tmp;
+                blockChain.size--;
+            }
+
+            first->next = next;
+            if (next == nullptr)
+                blockChain.tail = first;
+        }
+
+        first = first->next;
+    }
+}
+
+void BlockChainTransform(BlockChain& blockChain, updateFunction function) {
+    Node* cur = blockChain.root->next;
+
+    while (cur != nullptr) {
+        cur->transaction.value = function(cur->transaction.value);
+        cur = cur->next;
+    }
+}
